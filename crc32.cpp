@@ -1,6 +1,13 @@
 #include "common.hpp"
+#include "parser.hpp"
 
 auto main(int argc, char *argv[]) -> int {
-    const auto fd = raii::open(argv[1], O_RDONLY);
-    return print_and_compute<::crc32>(fd);
+    auto output = parser::parse(argc, argv);
+
+    return print_and_compute<::crc32>(output.file, //
+        options{
+            .path = std::move(output.path), //
+            .show_path = true, //
+            .as_decimal = false, //
+        });
 }
