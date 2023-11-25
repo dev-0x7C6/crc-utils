@@ -22,11 +22,13 @@ auto parse(int argc, char *argv[]) -> result {
     app.add_flag("--decimal,!--no-decimal", options.as_decimal, "print as decimal number");
     app.parse(argc, argv);
 
-    if (options.path.empty())
+    if (options.path.empty()) {
+        options.path = "-";
         return result{
             .file{raii::open::system_io{}, STDIN_FILENO}, //
             .options{std::move(options)}, //
         };
+    }
 
     return result{
         .file{options.path.c_str(), O_RDONLY}, //
