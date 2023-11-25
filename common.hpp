@@ -57,14 +57,23 @@ auto compute(const int fd) -> std::optional<hash_t> {
 
 struct options {
     std::string path;
+    bool prefix_0x{true};
     bool show_path{true};
     bool as_decimal{false};
+    bool as_uppercase{false};
 };
 
-constexpr auto to_digest(std::integral auto value, const bool as_decimal) -> std::string {
-    if (as_decimal)
+constexpr auto to_digest(std::integral auto value, const options &options) -> std::string {
+    if (options.as_decimal)
         return std::format("{}", value);
-    return std::format("{:0{}x}", value, sizeof(value) * 2);
+
+    const auto prefix = options.prefix_0x ? "0x" : "";
+    const auto padding = sizeof(value) * 2;
+
+    if (options.as_uppercase)
+        return std::format("{}{:0{}X}", prefix, value, padding);
+
+    return std::format("{}{:0{}x}", prefix, value, padding);
 }
 
 template <auto fn, typename hash_t = std::uint32_t>
@@ -72,7 +81,7 @@ auto print_and_compute(const int fd, const options &options = {}) -> hash_t {
     const auto ret = compute<fn, hash_t>(fd);
     if (!ret) return 1;
 
-    const auto digest = to_digest(ret.value(), options.as_decimal);
+    const auto digest = to_digest(ret.value(), options);
 
     auto logger = spdlog::stdout_logger_st("console");
     logger->set_pattern("%v");
