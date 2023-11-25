@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 
+#include <spdlog/sinks/stdout_sinks.h>
 #include <spdlog/spdlog.h>
 
 namespace raii {
@@ -50,7 +51,9 @@ template <auto fn, typename hash_t = std::uint32_t>
 auto print_and_compute(const int fd) -> hash_t {
     const auto ret = compute<fn, hash_t>(fd);
     if (!ret) return 1;
+    auto logger = spdlog::stdout_logger_st("console");
+    logger->set_pattern("%v");
     if constexpr (sizeof(hash_t) == 4)
-        spdlog::info("0x{:08x}", ret.value());
+        logger->info("0x{:08x}", ret.value());
     return 0;
 }
