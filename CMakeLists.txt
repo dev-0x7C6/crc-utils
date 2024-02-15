@@ -10,13 +10,16 @@ find_package(fmt REQUIRED)
 find_package(CLI11 REQUIRED)
 find_package(ZLIB REQUIRED)
 
-add_executable(adler32 adler32.cpp common.hpp parser.hpp)
-add_executable(crc32 crc32.cpp common.hpp parser.hpp)
+add_library(common INTERFACE src/common.hpp)
+target_include_directories(common INTERFACE src)
+target_link_libraries(common INTERFACE spdlog::spdlog ZLIB::ZLIB fmt::fmt
+	CLI11::CLI11)
 
-set(public-libraries spdlog::spdlog ZLIB::ZLIB fmt::fmt CLI11::CLI11)
+add_executable(adler32 targets/adler32/main.cpp)
+add_executable(crc32 targets/crc32/main.cpp)
 
-target_link_libraries(adler32 ${public-libraries})
-target_link_libraries(crc32 ${public-libraries})
+target_link_libraries(adler32 PRIVATE common)
+target_link_libraries(crc32 PRIVATE common)
 
 include(GNUInstallDirs)
 install(

@@ -15,10 +15,17 @@
 namespace raii {
 struct open {
     struct system_io {};
+    open() = default;
+    open(open &&other)
+            : descriptor(other.descriptor)
+            , closeable(other.closeable) {
+        other.closeable = false;
+        other.descriptor = 0;
+    }
 
-    template <typename... Ts>
-    open(Ts &&...args)
-            : descriptor(::open(std::forward<Ts>(args)...)) {}
+    template <typename T, typename... Ts>
+    open(T &&arg, Ts &&...args)
+            : descriptor(::open(std::forward<T>(arg), std::forward<Ts>(args)...)) {}
     open(system_io, const int fd)
             : descriptor(fd)
             , closeable(false) {}
@@ -33,8 +40,8 @@ struct open {
     }
 
 private:
-    const int descriptor{};
-    const bool closeable{true};
+    int descriptor{};
+    bool closeable{true};
 };
 } // namespace raii
 
@@ -57,8 +64,8 @@ auto compute(const int fd) -> std::optional<hash_t> {
 
 struct options {
     std::string path;
-    bool prefix_0x{true};
-    bool show_path{true};
+    bool prefix_0x{false};
+    bool show_path{false};
     bool as_decimal{false};
     bool as_uppercase{false};
 };
