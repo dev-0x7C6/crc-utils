@@ -10,7 +10,7 @@ find_package(fmt REQUIRED)
 find_package(CLI11 REQUIRED)
 find_package(ZLIB REQUIRED)
 
-add_library(common INTERFACE src/common.hpp)
+add_library(common INTERFACE src/common.hpp src/parser.hpp)
 target_include_directories(common INTERFACE src)
 target_link_libraries(common INTERFACE spdlog::spdlog ZLIB::ZLIB fmt::fmt
 	CLI11::CLI11)
