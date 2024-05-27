@@ -48,7 +48,7 @@ private:
 template <auto fn, typename hash_t = std::uint32_t>
 auto compute(const int fd) -> std::optional<hash_t> {
     std::vector<std::uint8_t> buffer(4096);
-    hash_t ret{};
+    auto ret = fn(0, nullptr, 0);
 
     ::lseek64(fd, 0, SEEK_SET);
     for (;;) {
