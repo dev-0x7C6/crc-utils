@@ -15,19 +15,21 @@ target_include_directories(common INTERFACE src)
 target_link_libraries(common INTERFACE spdlog::spdlog ZLIB::ZLIB fmt::fmt
 	CLI11::CLI11)
 
-add_executable(adler32 targets/adler32/main.cpp)
-add_executable(crc32 targets/crc32/main.cpp)
+add_executable(adler32sum targets/adler32/main.cpp)
+add_executable(crc32sum targets/crc32/main.cpp)
 
-target_link_libraries(adler32 PRIVATE common)
-target_link_libraries(crc32 PRIVATE common)
+target_link_libraries(adler32sum PRIVATE common)
+target_link_libraries(crc32sum PRIVATE common)
 
 include(GNUInstallDirs)
 install(
-  TARGETS adler32
+  TARGETS adler32sum
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
 
 install(
-  TARGETS crc32
+  TARGETS crc32sum
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
