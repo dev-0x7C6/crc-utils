@@ -70,12 +70,12 @@ auto compute(const int fd, const options &options) -> std::optional<hash_t> {
     auto size_limit = options.size;
 
     for (;;) {
-        std::uint64_t size = ::read(fd, buffer.data(), buffer.size());
+        auto size = ::read(fd, buffer.data(), buffer.size());
         if (size == 0) break;
         if (size <= 0) return {};
 
         if (size_limit) {
-            const auto chunk = std::min(size_limit.value(), size);
+            const auto chunk = std::min<std::uint64_t>(size_limit.value(), size);
             size_limit.value() -= chunk;
             size = chunk;
         }
