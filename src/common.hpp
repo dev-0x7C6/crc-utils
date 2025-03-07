@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <bit>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <zlib.h>
@@ -53,6 +54,7 @@ struct options {
     bool show_path{false};
     bool as_decimal{false};
     bool as_uppercase{false};
+    bool swap_endianness{false};
 
     std::optional<std::uint64_t> offset;
     std::optional<std::uint64_t> size;
@@ -95,6 +97,9 @@ constexpr auto to_digest(std::integral auto value, const options &options) -> st
 
     const auto prefix = options.prefix_0x ? "0x" : "";
     const auto padding = sizeof(value) * 2;
+
+    if (options.swap_endianness)
+        value = std::byteswap(value);
 
     if (options.as_uppercase)
         return std::format("{}{:0{}X}", prefix, value, padding);
