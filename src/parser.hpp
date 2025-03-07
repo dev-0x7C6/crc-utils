@@ -26,6 +26,7 @@ auto parse(int argc, char *argv[]) -> std::optional<result> {
 
         const auto enablers_group = "Enable";
         const auto disablers_group = "Disable";
+        const auto ranges_group = "Ranges";
 
         app.add_option("path", opts.path, "Path to file");
         app.add_flag("-x,--prefix-0x", opts.prefix_0x, "Show 0x prefix")->group(enablers_group);
@@ -38,6 +39,9 @@ auto parse(int argc, char *argv[]) -> std::optional<result> {
         app.add_flag("!--no-upper-case", opts.as_uppercase, "Use lowercase\n")->group(disablers_group);
         app.add_flag("!--no-dec", opts.as_decimal, "Print as hex number")->group(disablers_group);
         app.add_flag("!--no-decimal", opts.as_decimal)->group(disablers_group);
+
+        app.add_option("-o,--offset,--from-offset", opts.offset, "Calulcate from offset")->group(ranges_group);
+        app.add_option("-s,--size,--n-bytes", opts.size, "Calculate N bytes")->group(ranges_group);
 
         app.parse(argc, argv);
 
